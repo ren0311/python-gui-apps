@@ -1,4 +1,5 @@
 import tkinter as tk
+import random
 
 # ↓↓↓ お約束のコード ↓↓↓
 window = tk.Tk()
@@ -53,7 +54,7 @@ def check_winner():
 # ボタンクリックの処理関数
 def on_button_click(x, y):
     global current_player
-    if buttons[x][y]["text"] == "":
+    if buttons[x][y]["text"] == "" and current_player == "◯":
         buttons[x][y]["text"] = current_player
         winner = check_winner()
         if winner:
@@ -65,7 +66,29 @@ def on_button_click(x, y):
                 for button in row:
                     button.config(state="disabled")
         else:
-            current_player = "◯" if current_player == "×" else "×"
+            current_player = "×"
+            label1.config(text=f"次は {current_player} の番です")
+            computer_move()
+
+
+# コンピュータの動き
+def computer_move():
+    global current_player
+    empty_spaces = [(i, j) for i in range(3) for j in range(3) if buttons[i][j]["text"] == ""]
+    if empty_spaces:
+        x, y = random.choice(empty_spaces)
+        buttons[x][y]["text"] = "×"
+        winner = check_winner()
+        if winner:
+            if winner == "引き分け":
+                label1.config(text="引き分けです！")
+            else:
+                label1.config(text=f"{winner} の勝ち！")
+            for row in buttons:
+                for button in row:
+                    button.config(state="disabled")
+        else:
+            current_player = "◯"
             label1.config(text=f"次は {current_player} の番です")
 
 
